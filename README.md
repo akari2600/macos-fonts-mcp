@@ -50,7 +50,7 @@ make run
 ```bash
 uv venv
 source .venv/bin/activate
-uv pip install -e .[dev]
+uv sync --all-extras  # installs all dependencies including dev extras
 ```
 
 **With requirements files:**
