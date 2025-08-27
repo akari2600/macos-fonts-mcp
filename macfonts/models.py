@@ -1,5 +1,5 @@
-from pydantic import BaseModel
-from typing import Optional, List, Dict
+from pydantic import BaseModel, Field, validator
+from typing import Optional, List, Dict, Union
 
 class FontAxis(BaseModel):
     tag: str
@@ -54,3 +54,24 @@ class PublishResult(BaseModel):
     size_bytes: int
     sha256: str
     sample_html: str
+
+# Tool input validation models
+class ListFamiliesRequest(BaseModel):
+    pass  # No parameters needed
+
+class FacesForFamilyRequest(BaseModel):
+    family: str = Field(..., min_length=1, description="Font family name")
+
+class FontOverviewRequest(BaseModel):
+    postScriptName: str = Field(..., min_length=1, description="PostScript name of the font")
+
+class PublishFontRequest(BaseModel):
+    postScriptName: str = Field(..., min_length=1, description="PostScript name of the font")
+    convert: Optional[ConvertOptions] = Field(default_factory=ConvertOptions)
+    publish: PublishOptions = Field(..., description="S3 publishing options")
+    
+    @validator('publish')
+    def validate_publish_options(cls, v):
+        if not v.bucket:
+            raise ValueError("S3 bucket is required")
+        return v
