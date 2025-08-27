@@ -28,17 +28,43 @@ A high-performance Model Context Protocol (MCP) server for macOS font discovery,
 
 ```bash
 # Setup environment
-uv venv
+python3 -m venv .venv
 source .venv/bin/activate
 
+# Upgrade pip and install build tools
+pip install --upgrade pip setuptools wheel
+
 # Install with development tools
-uv pip install -e .[dev]
+pip install -e .[dev]
 
 # Run all checks
 make check
 
 # Start the server
 make run
+```
+
+### Alternative Installation Methods
+
+**With uv (if available):**
+```bash
+uv venv
+source .venv/bin/activate
+uv pip install -e .[dev]
+```
+
+**With requirements files:**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-dev.txt
+```
+
+**Production only:**
+```bash
+pip install -e .
+# or
+pip install -r requirements.txt
 ```
 
 ## 🛠️ Development
@@ -79,3 +105,52 @@ The `publish_font` tool provides a complete pipeline:
 - **Resource Cleanup**: Automatic cleanup of temporary files and memory
 - **Error Recovery**: Comprehensive error handling with fallback strategies
 - **Production Logging**: Structured JSON logs for monitoring and debugging
+
+## 🔧 Troubleshooting
+
+### Installation Issues
+
+**"pip install -e .[dev]" doesn't work:**
+```bash
+# Try upgrading pip first
+pip install --upgrade pip setuptools wheel
+pip install -e .[dev]
+
+# Or use requirements files
+pip install -r requirements-dev.txt
+
+# Or install dependencies separately
+pip install -e .
+pip install pytest pytest-asyncio pytest-mock pytest-cov rich loguru mypy black isort flake8
+```
+
+**Missing PyObjC on non-macOS systems:**
+The server requires macOS and PyObjC frameworks. For development on other systems:
+```bash
+# Install without macOS-specific dependencies
+pip install mcp fonttools boto3 pydantic pytest
+```
+
+**Virtual environment issues:**
+```bash
+# On Ubuntu/Debian, install venv support
+sudo apt install python3-venv python3-pip
+
+# Create and activate virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### Runtime Issues
+
+**CoreText import errors:**
+This is expected on non-macOS systems. The server is designed to run on macOS only.
+
+**S3 upload failures:**
+Ensure AWS credentials are configured:
+```bash
+aws configure
+# or set environment variables
+export AWS_ACCESS_KEY_ID=your_key
+export AWS_SECRET_ACCESS_KEY=your_secret
+```
