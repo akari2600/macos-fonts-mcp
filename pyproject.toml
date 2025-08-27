@@ -1,0 +1,26 @@
+[project]
+name = "macos-fonts-mcp"
+version = "0.2.0"
+description = "An MCP server for macOS font discovery, webfont conversion, and S3 publishing."
+authors = [{ name = "You" }]
+requires-python = ">=3.11"
+dependencies = [
+  "mcp>=1.2.0",
+  "pyobjc-core",
+  "pyobjc-framework-CoreText",
+  "pyobjc-framework-CoreGraphics",
+  "fonttools[woff,woff2]>=4.53.0",
+  "boto3>=1.34.0",
+  "pydantic>=2.7.0",
+  "uvloop; platform_system == 'Darwin'",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "rich", "loguru", "mypy"]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
